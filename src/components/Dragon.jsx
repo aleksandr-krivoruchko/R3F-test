@@ -1,16 +1,17 @@
 import React, { useEffect, useRef } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
 
-export function Dragon(props) {
+export function Dragon({hovered, ...props}) {
   const group = useRef();
   const { nodes, materials, animations } = useGLTF("/models/Dragon.gltf");
   const { actions } = useAnimations(animations, group);
 
   useEffect(() => {
-    actions["Flying_Idle"].reset().fadeIn(0.5).play();
+	const anim = hovered ? 'Death' : 'Flying_Idle';
+    actions[anim].reset().fadeIn(0.5).play();
 
-    return () => actions["Flying_Idle"].fadeOut(0.5);
-  }, []);
+    return () => actions[anim].fadeOut(0.5);
+  }, [hovered]);
 
   return (
     <group ref={group} {...props} dispose={null}>
