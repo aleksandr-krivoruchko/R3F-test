@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Environment,
   MeshPortalMaterial,
@@ -8,8 +9,9 @@ import {
   useTexture,
 } from "@react-three/drei";
 import * as THREE from "three";
+import { useControls } from "leva";
+
 import { Dragon } from "./Dragon";
-import { useState } from "react";
 import { Avatar } from "./Avatar";
 
 export const Experience = () => {
@@ -18,10 +20,17 @@ export const Experience = () => {
   useCursor(hovered);
   const map = useTexture("textures/surreal.jpg");
 
+  const { animation } = useControls({
+    animation: {
+      value: "Standing",
+      options: ["Standing", "Greeting", "Dancing"],
+    },
+  });
+
   return (
     <>
-      <OrbitControls autoRotate={true}/>
-		 <Text
+      <OrbitControls autoRotate={false} />
+      <Text
         color="#fff"
         font="fonts/Caprasimo-Regular.ttf"
         fontSize={0.1}
@@ -39,13 +48,22 @@ export const Experience = () => {
       </Text>
       <ambientLight intensity={0.5} />
       <Environment preset="sunset" />
-      <RoundedBox args={[2, 3, 0.2]} onDoubleClick={() => setShow(!show)} onPointerEnter={()=>setHovered(true)} onPointerLeave={()=>setHovered(false)}>
+      <RoundedBox
+        args={[2, 3, 0.2]}
+        onDoubleClick={() => setShow(!show)}
+        onPointerEnter={() => setHovered(true)}
+        onPointerLeave={() => setHovered(false)}>
         <planeGeometry args={[2, 3]} />
         <MeshPortalMaterial side={THREE.DoubleSide} blend={show ? 1 : 0}>
           <ambientLight intensity={0.5} />
           <Environment preset="city" />
-          {/* <Dragon scale={0.4} position-y={-1} hovered={hovered}/> */}
-			 <Avatar scale={0.8} position-y={-1} hovered={hovered}/>
+          {/* <Dragon scale={0.4} position-y={-1} hovered={hovered} /> */}
+          <Avatar
+            scale={0.8}
+            position-y={-1}
+            hovered={hovered}
+            animation={animation}
+          />
           <mesh>
             <sphereGeometry args={[5, 64, 64]} />
             <meshStandardMaterial map={map} side={THREE.BackSide} />
